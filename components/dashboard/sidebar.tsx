@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calendar, Tag, Home, Plus } from "lucide-react";
+import { Calendar, Tag, Home, Plus, Image } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
   { href: "/dashboard/logs", label: "Daily Logs", icon: Calendar },
   { href: "/dashboard/topics", label: "Topics", icon: Tag },
+  { href: "/dashboard/artifacts", label: "Artifacts", icon: Image },
 ];
 
 export default function Sidebar() {

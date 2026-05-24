@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
+import { Calendar, Tag, FileText, TrendingUp, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
-import { Calendar, Tag, FileText, TrendingUp } from "lucide-react";
 
 export default async function DashboardPage() {
   const supabase = createClient();
@@ -13,6 +13,17 @@ export default async function DashboardPage() {
   const { count: topicsCount } = await supabase
     .from("topics")
     .select("*", { count: "exact", head: true });
+
+  // Check if attachments table exists
+  let attachmentsCount = 0;
+  try {
+    const { count } = await supabase
+      .from("attachments")
+      .select("*", { count: "exact", head: true });
+    attachmentsCount = count || 0;
+  } catch {
+    attachmentsCount = 0;
+  }
 
   // Fetch recent logs
   const { data: recentLogs } = await supabase
@@ -36,7 +47,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-gray-800/50 backdrop-blur p-6 rounded-xl border border-gray-700">
           <div className="flex items-center justify-between">
             <div>
@@ -58,10 +69,19 @@ export default async function DashboardPage() {
         <div className="bg-gray-800/50 backdrop-blur p-6 rounded-xl border border-gray-700">
           <div className="flex items-center justify-between">
             <div>
+              <p className="text-gray-400 text-sm">Artifacts</p>
+              <p className="text-3xl font-bold">{attachmentsCount || 0}</p>
+            </div>
+            <ImageIcon className="w-8 h-8 text-green-400" />
+          </div>
+        </div>
+        <div className="bg-gray-800/50 backdrop-blur p-6 rounded-xl border border-gray-700">
+          <div className="flex items-center justify-between">
+            <div>
               <p className="text-gray-400 text-sm">This Month</p>
               <p className="text-3xl font-bold">{logsCount || 0}</p>
             </div>
-            <TrendingUp className="w-8 h-8 text-green-400" />
+            <TrendingUp className="w-8 h-8 text-emerald-400" />
           </div>
         </div>
       </div>
