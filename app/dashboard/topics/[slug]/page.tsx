@@ -20,13 +20,13 @@ export default async function TopicDetailPage({
     notFound();
   }
 
-  const { data: relatedLogs } = await supabase
-    .from("log_topics")
-    .select("log:logs(id, date, title, summary)")
-    .eq("topic_id", topic.id)
-    .order("log->date", { ascending: false });
+  const { data: logs } = await supabase
+    .from("logs")
+    .select("id, date, title, summary, log_topics!inner(topic_id)")
+    .eq("log_topics.topic_id", topic.id)
+    .order("date", { ascending: false });
 
-  const logs = relatedLogs?.map((lt: any) => lt.log) || [];
+  const conversations = logs || [];
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -53,14 +53,14 @@ export default async function TopicDetailPage({
         )}
 
         <div className="text-sm text-gray-400">
-          {logs.length} conversation{logs.length !== 1 ? "s" : ""} on this topic
+          {conversations.length} conversation{conversations.length !== 1 ? "s" : ""} on this topic
         </div>
       </div>
 
       <div>
         <h2 className="text-xl font-bold mb-4">Related Conversations</h2>
         <div className="space-y-3">
-          {logs.map((log: any) => (
+          {conversations.map((log: any) => (
             <Link
               key={log.id}
               href={`/dashboard/logs/${log.id}`}
@@ -88,7 +88,7 @@ export default async function TopicDetailPage({
             </Link>
           ))}
 
-          {logs.length === 0 && (
+          {conversations.length === 0 && (
             <div className="text-center py-8 text-gray-500 bg-gray-800/20 rounded-lg border border-gray-700">
               <p>No conversations logged for this topic yet.</p>
             </div>
