@@ -1,22 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  // Supabase stores session cookies as sb-{project-ref}-auth-token
-  const allCookies = request.cookies.getAll();
-  const hasSession = allCookies.some(c => c.name.startsWith("sb-") && c.name.endsWith("-auth-token"));
-
-  if (!hasSession && request.nextUrl.pathname.startsWith("/dashboard")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
-  }
-
-  if (hasSession && request.nextUrl.pathname === "/login") {
-    const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
-    return NextResponse.redirect(url);
-  }
-
+  // TEMPORARY: Allow all routes for debugging
   return NextResponse.next();
 }
 
