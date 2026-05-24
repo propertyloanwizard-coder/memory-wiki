@@ -1,7 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  const hasSession = request.cookies.has("sb-access-token");
+  // Supabase stores session cookies as sb-{project-ref}-auth-token
+  const allCookies = request.cookies.getAll();
+  const hasSession = allCookies.some(c => c.name.startsWith("sb-") && c.name.endsWith("-auth-token"));
 
   if (!hasSession && request.nextUrl.pathname.startsWith("/dashboard")) {
     const url = request.nextUrl.clone();
